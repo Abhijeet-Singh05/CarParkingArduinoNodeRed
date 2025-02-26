@@ -1,0 +1,96 @@
+// for test
+// Define pins for the ultrasonic sensor
+const int trigPin = 9;  // Trigger pin
+const int echoPin = 10; // Echo pin
+
+// Define detection range (in centimeters)
+const int detectionRange = 20; // Adjust this value as needed
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+
+  // Set pin modes
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  // Send a pulse to the ultrasonic sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Measure the duration of the echo pulse
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Calculate the distance in centimeters
+  int distance = duration * 0.034 / 2;
+
+  // Check if an object is within the detection range
+  if (distance > 0 && distance <= detectionRange) {
+    // Object detected: send 1 to the serial port
+    Serial.println("1");
+  } else {
+    // No object detected: send 0 to the serial port
+    Serial.println("0");
+  }
+
+  // Add a small delay to avoid flooding the serial port
+  delay(500);
+
+
+// For testing multiple
+
+// Define pins for the ultrasonic sensors
+const int trigPins[] = {2, 4, 6, 8};  // Trigger pins for sensors 0 to 3
+const int echoPins[] = {3, 5, 7, 9};  // Echo pins for sensors 0 to 3
+
+// Define detection range (in centimeters)
+const int detectionRange = 20; // Adjust this value as needed
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+
+  // Set pin modes for all sensors
+  for (int i = 0; i < 4; i++) {
+    pinMode(trigPins[i], OUTPUT);
+    pinMode(echoPins[i], INPUT);
+  }
+}
+
+void loop() {
+  // Loop through each sensor
+  for (int i = 0; i < 4; i++) {
+    // Send a pulse to the ultrasonic sensor
+    digitalWrite(trigPins[i], LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPins[i], HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPins[i], LOW);
+
+    // Measure the duration of the echo pulse
+    long duration = pulseIn(echoPins[i], HIGH);
+
+    // Calculate the distance in centimeters
+    int distance = duration * 0.034 / 2;
+
+    // Check if an object is within the detection range
+    if (distance > 0 && distance <= detectionRange) {
+      // Object detected: send sensor ID and 1 to the serial port
+      Serial.print(i); // Sensor ID (0 to 3)
+      Serial.println(":1");
+    } else {
+      // No object detected: send sensor ID and 0 to the serial port
+      Serial.print(i); // Sensor ID (0 to 3)
+      Serial.println(":0");
+    }
+  }
+
+  // Add a small delay to avoid flooding the serial port
+  delay(500);
+}
+}
