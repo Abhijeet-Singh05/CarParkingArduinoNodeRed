@@ -1,0 +1,381 @@
+[
+    {
+        "id": "922831265a61a6b6",
+        "type": "tab",
+        "label": "Random Table Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "94806b84638ab4e4",
+        "type": "group",
+        "z": "922831265a61a6b6",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "fe775925d282c62e",
+            "2f85aea1e424c8df",
+            "5eb1f4ee03e548ec",
+            "24c8dac4548a9236",
+            "50b036cbb611b377"
+        ],
+        "x": 14,
+        "y": 259,
+        "w": 632,
+        "h": 182
+    },
+    {
+        "id": "b90e772f7fcf14ec",
+        "type": "inject",
+        "z": "922831265a61a6b6",
+        "name": "Trigger Process",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "aea385f3576bd172"
+            ]
+        ]
+    },
+    {
+        "id": "aea385f3576bd172",
+        "type": "function",
+        "z": "922831265a61a6b6",
+        "name": "Generate Random Data",
+        "func": "// Generate an array of objects with random 0 or 1 values\nlet data = [];\nfor (let i = 0; i < 10; i++) {\n    data.push({\n        id: i + 1,\n        value: Math.round(Math.random()) // Random 0 or 1\n    });\n}\n\n// Store the generated data in the global context\nglobal.set('randomData', data);\n\n// Set the generated data as the message payload\nmsg.payload = data;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 140,
+        "wires": [
+            [
+                "e166b1b556227b02",
+                "a3ef7da5342d7aba"
+            ]
+        ]
+    },
+    {
+        "id": "e166b1b556227b02",
+        "type": "ui_table",
+        "z": "922831265a61a6b6",
+        "group": "d4e5f6g7.4h5i6j",
+        "name": "Random Data Table",
+        "order": 1,
+        "width": 6,
+        "height": 4,
+        "columns": [
+            {
+                "field": "id",
+                "title": "Row ID",
+                "width": "50%",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "value",
+                "title": "Value (0 or 1)",
+                "width": "50%",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 550,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "a3ef7da5342d7aba",
+        "type": "function",
+        "z": "922831265a61a6b6",
+        "name": "Transform Data",
+        "func": "// Retrieve the random data from the global context\nlet randomData = global.get('randomData');\n\n// Transform the data: Replace 0 with \"Available\" and 1 with \"Occupied\"\nlet transformedData = randomData.map(entry => {\n    return {\n        id: entry.id,\n        status: entry.value === 0 ? \"Available\" : \"Occupied\"\n    };\n});\n\n// Log the transformed data to the debug panel\nnode.log('Transformed Data:', transformedData);\n\n// Pass the transformed data as the message payload\nmsg.payload = transformedData;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 200,
+        "wires": [
+            [
+                "e4de8366495901fe"
+            ]
+        ]
+    },
+    {
+        "id": "e4de8366495901fe",
+        "type": "ui_table",
+        "z": "922831265a61a6b6",
+        "group": "d4e5f6g7.4h5i6j",
+        "name": "Transformed Data Table",
+        "order": 1,
+        "width": 12,
+        "height": 8,
+        "columns": [
+            {
+                "field": "id",
+                "title": "Row ID",
+                "width": "50%"
+            },
+            {
+                "field": "status",
+                "title": "Status",
+                "width": "50%"
+            }
+        ],
+        "outputs": 0,
+        "x": 770,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "fe775925d282c62e",
+        "type": "ui_form",
+        "z": "922831265a61a6b6",
+        "g": "94806b84638ab4e4",
+        "name": "Row Number Input Form",
+        "label": "",
+        "group": "09eff24c39e1814b",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "options": [
+            {
+                "label": "Slot Number",
+                "value": "rowNumber",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "rowNumber": ""
+        },
+        "payload": "",
+        "submit": "Check",
+        "cancel": "Cancel",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "2f85aea1e424c8df"
+            ]
+        ]
+    },
+    {
+        "id": "2f85aea1e424c8df",
+        "type": "function",
+        "z": "922831265a61a6b6",
+        "g": "94806b84638ab4e4",
+        "name": "Store Row Number",
+        "func": "// Store the row number in the global context\nglobal.set('rowNumber', msg.payload.rowNumber);\n\n// Retrieve the row number from the form input\nlet rowNumber = msg.payload.rowNumber;\n\n// Retrieve the random data from the global context\nlet randomData = global.get('randomData');\n\n// Find the corresponding row\nlet row = randomData.find(entry => entry.id === rowNumber);\n\nif (row) {\n    // Determine the status\n    let status = row.value === 0 ? 'Available' : 'Occupied';\n    msg.payload = `Slot A${rowNumber} is ${status}`;\n} else {\n    msg.payload = `Slot A${rowNumber} not found`;\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 300,
+        "wires": [
+            [
+                "5eb1f4ee03e548ec"
+            ]
+        ]
+    },
+    {
+        "id": "5eb1f4ee03e548ec",
+        "type": "ui_text",
+        "z": "922831265a61a6b6",
+        "g": "94806b84638ab4e4",
+        "group": "09eff24c39e1814b",
+        "order": 6,
+        "width": 7,
+        "height": 2,
+        "name": "Status Result",
+        "label": "Status",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 550,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "24c8dac4548a9236",
+        "type": "ui_button",
+        "z": "922831265a61a6b6",
+        "g": "94806b84638ab4e4",
+        "name": "Book Slot",
+        "group": "09eff24c39e1814b",
+        "order": 7,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "Book",
+        "tooltip": "",
+        "color": "blue",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 150,
+        "y": 400,
+        "wires": [
+            [
+                "50b036cbb611b377"
+            ]
+        ]
+    },
+    {
+        "id": "50b036cbb611b377",
+        "type": "function",
+        "z": "922831265a61a6b6",
+        "g": "94806b84638ab4e4",
+        "name": "Book Slot Logic",
+        "func": "// Retrieve the row number from the global context\nlet rowNumber = global.get('rowNumber');\n\n// Retrieve the random data from the global context\nlet randomData = global.get('randomData');\n\n// Find the corresponding row\nlet row = randomData.find(entry => entry.id === rowNumber);\n\nif (row) {\n    if (row.value === 0) {\n        // Book the slot (change 0 to 1)\n        row.value = 1;\n        msg.payload = `Slot ${rowNumber} is now booked.`;\n    } else {\n        msg.payload = `Slot ${rowNumber} is already booked.`;\n    }\n    // Update the global context\nglobal.set('randomData', randomData);\n} else {\n    msg.payload = `Row ${rowNumber} not found.`;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 400,
+        "wires": [
+            [
+                "5eb1f4ee03e548ec"
+            ]
+        ]
+    },
+    {
+        "id": "134b5582fbcae23a",
+        "type": "function",
+        "z": "922831265a61a6b6",
+        "name": "Store Serial Data",
+        "func": "// Retrieve the existing random data from the global context\nlet randomData = global.get('randomData') || [];\n\n// Parse the serial data (assuming it's in the format 'id:value')\nlet serialData = msg.payload.trim();\nlet [id, value] = serialData.split(':');\n\n// Update the randomData array\nlet entry = randomData.find(entry => entry.id === parseInt(id));\nif (entry) {\n    entry.value = parseInt(value);\n} else {\n    randomData.push({ id: parseInt(id), value: parseInt(value) });\n}\n\n// Update the global context\nglobal.set('randomData', randomData);\n\n// Set the updated data as the message payload\nmsg.payload = randomData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 500,
+        "wires": [
+            [
+                "e166b1b556227b02",
+                "a3ef7da5342d7aba"
+            ]
+        ]
+    },
+    {
+        "id": "2011d3583025f053",
+        "type": "serial in",
+        "z": "922831265a61a6b6",
+        "name": "Read Serial Data",
+        "serial": "cd56dea8ca7bdd90",
+        "x": 120,
+        "y": 500,
+        "wires": [
+            [
+                "134b5582fbcae23a"
+            ]
+        ]
+    },
+    {
+        "id": "d4e5f6g7.4h5i6j",
+        "type": "ui_group",
+        "name": "Slot Status",
+        "tab": "e5f6g7h8.5i6j7k",
+        "order": 1,
+        "disp": true,
+        "width": 13,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "09eff24c39e1814b",
+        "type": "ui_group",
+        "name": "Booking",
+        "tab": "724ba9f0588abec2",
+        "order": 1,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "cd56dea8ca7bdd90",
+        "type": "serial-port",
+        "name": "",
+        "serialport": "COM3",
+        "serialbaud": "38400",
+        "databits": 8,
+        "parity": "none",
+        "stopbits": 1,
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": 10000
+    },
+    {
+        "id": "e5f6g7h8.5i6j7k",
+        "type": "ui_tab",
+        "name": "Slot Status",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "724ba9f0588abec2",
+        "type": "ui_tab",
+        "name": "Booking",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]

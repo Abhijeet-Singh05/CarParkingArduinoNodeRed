@@ -1,0 +1,486 @@
+[
+    {
+        "id": "ff352b5a352e1eca",
+        "type": "tab",
+        "label": "Random Table Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ef9551bcd1642e8f",
+        "type": "group",
+        "z": "ff352b5a352e1eca",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "e442f56c4b120545",
+            "ac3ee2014b22f7db",
+            "f0a906cc5a41d3b3",
+            "c9fcf7d21ff357a1",
+            "497870278a44fb55"
+        ],
+        "x": 14,
+        "y": 259,
+        "w": 632,
+        "h": 182
+    },
+    {
+        "id": "d0a4e141f6ccf8ca",
+        "type": "inject",
+        "z": "ff352b5a352e1eca",
+        "name": "Trigger Process",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "8f403b6eb5a94ea8"
+            ]
+        ]
+    },
+    {
+        "id": "8f403b6eb5a94ea8",
+        "type": "function",
+        "z": "ff352b5a352e1eca",
+        "name": "Generate Random Data",
+        "func": "// Generate an array of objects with random 0 or 1 values\nlet data = [];\nfor (let i = 0; i < 10; i++) {\n    data.push({\n        id: i + 1,\n        value: Math.round(Math.random()) // Random 0 or 1\n    });\n}\n\n// Store the generated data in the global context\nglobal.set('randomData', data);\n\n// Set the generated data as the message payload\nmsg.payload = data;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "3db556736ac29e23",
+                "9545b0d237972589"
+            ]
+        ]
+    },
+    {
+        "id": "3db556736ac29e23",
+        "type": "ui_table",
+        "z": "ff352b5a352e1eca",
+        "group": "",
+        "name": "Random Data Table",
+        "order": 1,
+        "width": 6,
+        "height": 4,
+        "columns": [
+            {
+                "field": "id",
+                "title": "Row ID",
+                "width": "50%",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "value",
+                "title": "Value (0 or 1)",
+                "width": "50%",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 550,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "9545b0d237972589",
+        "type": "function",
+        "z": "ff352b5a352e1eca",
+        "name": "Transform Data",
+        "func": "// Retrieve the random data from the global context\nlet randomData = global.get('randomData');\n\n// Transform the data: Replace 0 with \"Available\" and 1 with \"Occupied\"\nlet transformedData = randomData.map(entry => {\n    return {\n        id: entry.id,\n        status: entry.value === 0 ? \"Available\" : \"Occupied\"\n    };\n});\n\n// Log the transformed data to the debug panel\nnode.log('Transformed Data:', transformedData);\n\n// Pass the transformed data as the message payload\nmsg.payload = transformedData;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 200,
+        "wires": [
+            [
+                "99874442f49d1db3"
+            ]
+        ]
+    },
+    {
+        "id": "99874442f49d1db3",
+        "type": "ui_table",
+        "z": "ff352b5a352e1eca",
+        "group": "d4e5f6g7.4h5i6j",
+        "name": "Transformed Data Table",
+        "order": 1,
+        "width": 12,
+        "height": 8,
+        "columns": [
+            {
+                "field": "id",
+                "title": "Row ID",
+                "width": "50%"
+            },
+            {
+                "field": "status",
+                "title": "Status",
+                "width": "50%"
+            }
+        ],
+        "outputs": 0,
+        "x": 770,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e442f56c4b120545",
+        "type": "ui_form",
+        "z": "ff352b5a352e1eca",
+        "g": "ef9551bcd1642e8f",
+        "name": "Row Number Input Form",
+        "label": "",
+        "group": "09eff24c39e1814b",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "options": [
+            {
+                "label": "Slot Number",
+                "value": "rowNumber",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "rowNumber": ""
+        },
+        "payload": "",
+        "submit": "Check",
+        "cancel": "Cancel",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "ac3ee2014b22f7db"
+            ]
+        ]
+    },
+    {
+        "id": "ac3ee2014b22f7db",
+        "type": "function",
+        "z": "ff352b5a352e1eca",
+        "g": "ef9551bcd1642e8f",
+        "name": "Store Row Number",
+        "func": "// Store the row number in the global context\nglobal.set('rowNumber', msg.payload.rowNumber);\n\n// Retrieve the row number from the form input\nlet rowNumber = msg.payload.rowNumber;\n\n// Retrieve the random data from the global context\nlet randomData = global.get('randomData');\n\n// Find the corresponding row\nlet row = randomData.find(entry => entry.id === rowNumber);\n\nif (row) {\n    // Determine the status\n    let status = row.value === 0 ? 'Available' : 'Occupied';\n    msg.payload = `Slot A${rowNumber} is ${status}`;\n} else {\n    msg.payload = `Slot A${rowNumber} not found`;\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 300,
+        "wires": [
+            [
+                "f0a906cc5a41d3b3"
+            ]
+        ]
+    },
+    {
+        "id": "f0a906cc5a41d3b3",
+        "type": "ui_text",
+        "z": "ff352b5a352e1eca",
+        "g": "ef9551bcd1642e8f",
+        "group": "09eff24c39e1814b",
+        "order": 6,
+        "width": 7,
+        "height": 2,
+        "name": "Status Result",
+        "label": "Status",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 550,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c9fcf7d21ff357a1",
+        "type": "ui_button",
+        "z": "ff352b5a352e1eca",
+        "g": "ef9551bcd1642e8f",
+        "name": "Book Slot",
+        "group": "09eff24c39e1814b",
+        "order": 7,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "Book",
+        "tooltip": "",
+        "color": "blue",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 150,
+        "y": 400,
+        "wires": [
+            [
+                "497870278a44fb55"
+            ]
+        ]
+    },
+    {
+        "id": "497870278a44fb55",
+        "type": "function",
+        "z": "ff352b5a352e1eca",
+        "g": "ef9551bcd1642e8f",
+        "name": "Book Slot Logic",
+        "func": "// Retrieve the row number from the global context\nlet rowNumber = global.get('rowNumber');\n\n// Retrieve the random data from the global context\nlet randomData = global.get('randomData');\n\n// Find the corresponding row\nlet row = randomData.find(entry => entry.id === rowNumber);\n\nif (row) {\n    if (row.value === 0) {\n        // Book the slot (change 0 to 1)\n        row.value = 1;\n        msg.payload = `Slot ${rowNumber} is now booked.`;\n    } else {\n        msg.payload = `Slot ${rowNumber} is already booked.`;\n    }\n    // Update the global context\nglobal.set('randomData', randomData);\n} else {\n    msg.payload = `Row ${rowNumber} not found.`;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 400,
+        "wires": [
+            [
+                "f0a906cc5a41d3b3"
+            ]
+        ]
+    },
+    {
+        "id": "9cdd03c973158d79",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "09eff24c39e1814b",
+        "order": 2,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "161e7ebb223e16ae",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "09eff24c39e1814b",
+        "order": 5,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "4dc0067b6d2b4417",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "09eff24c39e1814b",
+        "order": 8,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "552e3681e3e3485f",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "36e8a35102c7fedb",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "c0fee873a11317e6",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "68ecb3855ba3d60c",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 5,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "30703c646c8c7ca8",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 6,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "5071dc2d92e746b6",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 7,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "a044155583d13695",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 8,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "994d9ed13e8d5fcc",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 9,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "6ec614d884ec8e36",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 10,
+        "width": 13,
+        "height": 1
+    },
+    {
+        "id": "895031d6371d942a",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 13,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "22c4bd489f46890c",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 14,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "58198ff0adbf9d8f",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 15,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "541727ea039a9b92",
+        "type": "ui_spacer",
+        "z": "ff352b5a352e1eca",
+        "name": "spacer",
+        "group": "d4e5f6g7.4h5i6j",
+        "order": 16,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "d4e5f6g7.4h5i6j",
+        "type": "ui_group",
+        "name": "Slot Status",
+        "tab": "e5f6g7h8.5i6j7k",
+        "order": 1,
+        "disp": true,
+        "width": 13,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "09eff24c39e1814b",
+        "type": "ui_group",
+        "name": "Booking",
+        "tab": "724ba9f0588abec2",
+        "order": 1,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e5f6g7h8.5i6j7k",
+        "type": "ui_tab",
+        "name": "Slot Status",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "724ba9f0588abec2",
+        "type": "ui_tab",
+        "name": "Booking",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
