@@ -379,3 +379,27 @@
         "hidden": false
     }
 ]
+
+// FUNCTION
+[
+    {
+        "id": "40bb632b2cf652fb",
+        "type": "function",
+        "z": "e5b94a8daafdfc90",
+        "name": "function 1",
+        "func": "// Initialize an empty array for the table rows\nlet tableData = global.get('tableData') || [];\n\n// Assuming payload is something like \"(1:0)\"\nvar data = msg.payload.trim().slice(1, -1);  // Remove the parentheses\nvar parts = data.split(\":\"); // Split by ':'\n\nvar id = parseInt(parts[0]);\nvar value = parseInt(parts[1]);\n\n// Initialize the status variable\nvar status = value === 0 ? \"Available\" : \"Occupied\";\n\n// Add this row to the array\ntableData.push({ id: id, status: status });\n\n// Save the table data to global context\nglobal.set('tableData', tableData);\n\n// Set the table data to the payload\nmsg.payload = tableData;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 220,
+        "wires": [
+            [
+                "08faee7d4338afb3"
+            ]
+        ]
+    }
+]
